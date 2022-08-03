@@ -1,0 +1,32 @@
+{
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "nanoid": "^4.0.0",
+    "pg": "^8.7.3",
+    "uuid": "^8.3.2"
+  },
+  "name": "projeto16-shortly",
+  "description": "implementar o back-end, modelar e criar o banco de dados (relacional) de um sistema encurtador de URLs chamado Shortly: Links que cabem no bolso!",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Uenderss/projeto16-shortly.git"
+  },
+  "author": "bartolomeu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Uenderss/projeto16-shortly/issues"
+  },
+  "homepage": "https://github.com/Uenderss/projeto16-shortly#readme"
+}
