@@ -1,4 +1,6 @@
+import {v4 as uuid} from 'uuid';
 import signUpRepository from '../repositories/signUpRepository.js';
+import sessionRepository from '../repositories/sessionRepository.js';
 
 async function signUp(req, res) {
     const {name, email, password} = req.body;
