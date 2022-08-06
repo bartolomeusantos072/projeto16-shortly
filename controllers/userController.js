@@ -1,57 +1,47 @@
-import {v4 as uuid} from 'uuid';
-import signUpRepository from '../repositories/signUpRepository.js';
-import sessionRepository from '../repositories/sessionRepository.js';
-
-async function signUp(req, res) {
-    const {name, email, password} = req.body;
-    try {
-        const existingEmail = await signUpRepository.getUserByEmail(email);
-        if (existingEmail.rowCount > 0) {
-            return res.sendStatus(409);
-        }
-        await signUpRepository.createUser(name, email, password);
-        res.sendStatus(201);
-    } catch (e) {
-        console.log(error);
-        return res.sendStatus(500);
-    }
-}
-
-async function signIn(req,res){
-    const {email,password}=req.body;
-    try{
-        const { rows } = await signUpRepository.getUserByEmail(email);
-        if (!rows[0]) {
-            return res.sendStatus(401);
-        }
-        if (bcrypt.compareSync(password, user.password)) {
-            const token = uuid();
-            await sessionRepository.createSession(token, user.id);
-            return res.send(token);
-          }
-        
-          res.sendStatus(401); 
-
-    }catch (e) {
-        console.log(error);
-        return res.sendStatus(500);
-    }
-
-}
+import signUpRepository from "../repositories/signUpRepository";
+import urlsRepository from '../repositories/urlsRepository.js';
 
 async function getUserById(req, res) {
+    
+        const {id} = req.params;
+        const {user} = res.locals;
 
-}
+        if (id != user.id) {
+            return res.sendStatus(401);
+        }
 
-async function getRanking(req, res) {
+        try {
+            const resultVisit = await urlsRepository.getVisitCountByUser(id);//tem que implementar
+            const [countVisit] = resultVisit.rows;
 
-}
+            const resultUrls = await urlsRepository.getURLSbyUser(id);//tem que implementar
+            const userUrls = resultUrls.rows;
 
-const userController = {
-    signUp,
-    signIn,
-    getUserById,
-    getRanking
-}
+            res.send({
+                id: user.id,
+                name: user.name,
+                countVisit: countVisit.sum || 0,
+                shortenedUrls: userUrls
+            });
 
-export default userController;
+        } catch (e) {
+            console.log(e);
+            res.sendStatus(500);
+        }
+ }
+    async function getRanking(req, res) {
+        try { 
+            const resultRank = await signUpRepository.getUrlsRankingByUser();//tem que implementar
+            res.send(resultRank.rows);
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(500); // server error
+        }
+    }
+
+    const userController = {
+        getUserById,
+        getRanking
+    }
+
+    export default userController;
