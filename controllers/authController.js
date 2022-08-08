@@ -1,7 +1,7 @@
 import {v4 as uuid} from 'uuid';
 import bcrypt from 'bcrypt';
 import signUpRepository from '../repositories/signUpRepository.js';
-import {createSession} from '../repositories/sessionRepository.js';
+import sessionsRepository from '../repositories/sessionsRepository.js';
 
 export async function signUp(req, res) {
     console.log(req.body);
@@ -31,7 +31,7 @@ export async function signIn(req,res){
         
         if (bcrypt.compareSync(password, rows[0].password)) {
             const token = uuid();
-            await createSession(token, rows[0].iduser);
+            await sessionsRepository.createSession(token, rows[0].iduser);
             return res.send(token);
           }
         

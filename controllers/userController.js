@@ -11,10 +11,10 @@ async function getUserById(req, res) {
         }
 
         try {
-            const resultVisit = await urlsRepository.getVisitCountByUser(id);//tem que implementar
+            const resultVisit = await urlsRepository.getVisitCountByUser(id);
             const [countVisit] = resultVisit.rows;
 
-            const resultUrls = await urlsRepository.getURLSbyUser(id);//tem que implementar
+            const resultUrls = await urlsRepository.getURLSbyUser(id);
             const userUrls = resultUrls.rows;
 
             res.send({
@@ -32,7 +32,7 @@ async function getUserById(req, res) {
 
 async function getRanking(req, res) {
         try { 
-            const resultRank = await signUpRepository.getUrlsRankingByUser();//tem que implementar
+            const resultRank = await signUpRepository.getUrlsRankingByUser();
             res.send(resultRank.rows);
         } catch (error) {
             console.log(error);
