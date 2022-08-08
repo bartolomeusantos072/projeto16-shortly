@@ -4,8 +4,10 @@ import { nanoid } from "nanoid";
 import urlsRepository from "./../repositories/urlsRepository.js"
 
 export async function shortenURL(req, res) {
-  
+ 
   const shortURL = nanoid(8);
+
+  console.log("Nay",res.locals.user);
 
   try {
     await urlsRepository.createShortURL(req.body.url, shortURL, res.locals.user.id);
