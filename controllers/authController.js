@@ -2,7 +2,8 @@ import {v4 as uuid} from 'uuid';
 import signUpRepository from '../repositories/signUpRepository.js';
 import sessionRepository from '../repositories/sessionRepository.js';
 
-async function signUp(req, res) {
+export async function signUp(req, res) {
+    console.log(req.body);
     const {name, email, password} = req.body;
     try {
         const existingEmail = await signUpRepository.getUserByEmail(email);
@@ -17,7 +18,7 @@ async function signUp(req, res) {
     }
 }
 
-async function signIn(req,res){
+export async function signIn(req,res){
     const {email,password}=req.body;
     try{
         const { rows } = await signUpRepository.getUserByEmail(email);
@@ -38,10 +39,3 @@ async function signIn(req,res){
     }
 
 }
-
-const authController = {
-    signUp,
-    signIn,
-}
-
-export default authController;
