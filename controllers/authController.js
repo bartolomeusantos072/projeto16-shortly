@@ -11,7 +11,7 @@ async function signUp(req, res) {
         }
         await signUpRepository.createUser(name, email, password);
         res.sendStatus(201);
-    } catch (e) {
+    } catch (error) {
         console.log(error);
         return res.sendStatus(500);
     }
@@ -32,7 +32,7 @@ async function signIn(req,res){
         
           res.sendStatus(401); 
 
-    }catch (e) {
+    }catch (error) {
         console.log(error);
         return res.sendStatus(500);
     }

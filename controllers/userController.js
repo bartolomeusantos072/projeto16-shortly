@@ -24,8 +24,8 @@ async function getUserById(req, res) {
                 shortenedUrls: userUrls
             });
 
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            console.log(error);
             res.sendStatus(500);
         }
 }

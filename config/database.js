@@ -4,14 +4,14 @@ dotenv.config();
 
 const {Pool} = pg;
 
-const database = new Pool({
-  connectionString: process.env.DATABASE_URL
+const databaseConfig = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+}
 });
 
-if(process.env.MODE === "PROD") { //COLOCAR PROD NO HEROKU
-  database.ssl = {
-    rejectUnauthorized: false
-  }
-}
+
+const database = new Pool(databaseConfig);
 
 export default database;
