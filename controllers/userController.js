@@ -1,4 +1,4 @@
-import signUpRepository from "../repositories/signUpRepository";
+import signUpRepository from "../repositories/signUpRepository.js";
 import urlsRepository from '../repositories/urlsRepository.js';
 
 async function getUserById(req, res) {
@@ -28,8 +28,9 @@ async function getUserById(req, res) {
             console.log(e);
             res.sendStatus(500);
         }
- }
-    async function getRanking(req, res) {
+}
+
+async function getRanking(req, res) {
         try { 
             const resultRank = await signUpRepository.getUrlsRankingByUser();//tem que implementar
             res.send(resultRank.rows);
@@ -37,7 +38,8 @@ async function getUserById(req, res) {
             console.log(error);
             return res.sendStatus(500); // server error
         }
-    }
+}
+
 
     const userController = {
         getUserById,

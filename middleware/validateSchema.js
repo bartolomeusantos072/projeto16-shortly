@@ -1,5 +1,4 @@
-
-function validateSchema(schema) {
+export function validatorSchema(schema) {
     return(req, res, next) => {
         const {error} = schema.validate(req.body, {abortEarly: false});
         if (error) {
@@ -10,4 +9,3 @@ function validateSchema(schema) {
 
 }
 
-export default validateSchema();

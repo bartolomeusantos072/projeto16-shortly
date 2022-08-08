@@ -15,14 +15,31 @@ async function getUserById(id){
     return database.query(`SELECT * FROM users WHERE id=$1`,[id]);
 }
 
-async function getUserDetails(id){
-    
-}
+async function getUserAndLinksById(id) {
+    return db.query(`
+    SELECT u.id, u."shortUrl", u.url, u."visitCount"
+    FROM urls u
+    JOIN users usr ON u."userId" = usr.id
+    WHERE usr.id = $1`, [id]);
+  }
+  
+  async function getUserUrlsRankingBy() {
+    return db.query(`
+      SELECT usr.id, usr.name, COUNT(u.id) as "linksCount", SUM(u."visitCount") as "visitCount"
+      FROM urls u
+      JOIN users usr ON u."userId" = usr.id
+      GROUP BY usr.id
+      ORDER BY "visitCount" DESC
+      LIMIT 10
+    `);
+  }
+
 const signUpRepository={
-    getUserByEmail,
     createUser,
+    getUserByEmail,
     getUserById,
-    getUserDetails
+    getUserAndLinksById,
+    getUserUrlsRankingBy
 }
 
 export default signUpRepository;

@@ -3,7 +3,7 @@
   "description": "implementar o back-end, modelar e criar o banco de dados (relacional) de um sistema encurtador de URLs chamado Shortly: Links que cabem no bolso!",
   "version": "1.0.0",
   "main": "index.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js"
@@ -25,6 +25,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "joi": "^17.6.0",
     "nanoid": "^4.0.0",
     "pg": "^8.7.3",
     "uuid": "^8.3.2"
