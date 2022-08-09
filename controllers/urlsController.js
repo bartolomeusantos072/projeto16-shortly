@@ -1,87 +1,72 @@
+import chalk from "chalk";
+import { nanoid } from 'nanoid'
 
-import { nanoid } from "nanoid";
+import db from "../db.js";
+import { urlsRepository } from "../repositories/urlsRepository.js";
 
-import urlsRepository from "./../repositories/urlsRepository.js"
-
-export async function shortenURL(req, res) {
- 
-  const shortURL = nanoid(8);
-
-  console.log("Nay",res.locals.user);
+export async function postURL(req, res) {
+  const { tokensResult: { userId } } = res.locals;
+  const { url } = req.body;
+  const shortUrl = nanoid(8);
 
   try {
-    await urlsRepository.createShortURL(req.body.url, shortURL, res.locals.user.id);
-    res.status(201).send({shortURL});
+    await urlsRepository.postURL(userId, url, shortUrl);
+    res.status(201).send({ shortUrl });
   } catch (error) {
     console.log(error);
-    return res.sendStatus(500); 
+    res.sendStatus(500);
   }
 }
 
-export async function getURLById(req, res) {
-  
+export async function getURL(req, res) {
+  const { id } = req.params;
+
   try {
-    const result = await urlsRepository.getURLById(req.params.id);
-    if(result.rowCount === 0) {
-      return res.sendStatus(404); 
-    }
-  
-    const [url] = result.rows;
-  
-    delete url.visitCount;
-    delete url.userId;
-  
-    res.send(url);
+    const urlsResult = await urlsRepository.getURL(id);
+
+    if (urlsResult.rowCount === 0) return res.sendStatus(404);
+    const url = urlsResult.rows[0];
+
+    res.status(200).send(url);
   } catch (error) {
     console.log(error);
-    return res.sendStatus(500); 
+    res.sendStatus(500);
   }
-  
+}
+
+export async function openURL(req, res) {
+  const { shortUrl } = req.params;
+  try {
+    const urlsResult = await urlsRepository.selectOpenURL(shortUrl);
+
+    if (urlsResult.rowCount === 0) return res.sendStatus(404);
+
+    await urlsRepository.insertOpenURL(shortUrl);
+
+    const { url } = urlsResult.rows[0];
+    res.redirect(302, url);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
 }
 
 export async function deleteURL(req, res) {
+  const { tokensResult: { userId } } = res.locals;
   const { id } = req.params;
-  const { user } = res.locals;
 
   try {
-    const result = await urlsRepository.getURLById(id)
-    if (result.rowCount === 0) {
-      return res.sendStatus(404); 
-    }
-  
-    const [url] = result.rows;
-    if(url.userId !== user.id) {
-      return res.sendStatus(401); 
-    }
-  
+    const urlsResult = await urlsRepository.selectDeleteURL(id);
+
+    if (urlsResult.rowCount === 0) return res.sendStatus(404);
+
+    const { userId: urlUserId } = urlsResult.rows[0];
+    if (urlUserId !== userId) return res.sendStatus(401);
+
     await urlsRepository.deleteURL(id);
-    res.sendStatus(204);  
+    res.sendStatus(204)
   } catch (error) {
     console.log(error);
-    return res.sendStatus(500); 
+    res.sendStatus(500);
   }
 }
-
-export async function openShortUrl(req, res) {
-  const { shortUrl } = req.params;
-  try {
-    const result = await urlsRepository.getByShortURL(shortUrl)
-    if (result.rowCount === 0) {
-      return res.sendStatus(404); 
-    }
-    const [url] = result.rows;
-    await urlsRepository.incrementURLVisitCount(url.id);
-    res.redirect(url.url);
-  } catch (error) {
-    console.log(error);
-    return res.sendStatus(500); 
-  }
-}
-const urlsController={
-    shortenURL,
-    getURLById,
-    deleteURL,
-    openShortUrl
-}
-
-export default urlsController;

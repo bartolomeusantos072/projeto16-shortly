@@ -26,7 +26,7 @@ async function getUserAndLinksById(id) {
     WHERE usr.id = $1`, [id]);
   }
   
-  async function getUserUrlsRankingBy() {
+  async function getUrlsRankingByUser() {
     return database.query(`
       SELECT usr.id, usr.name, COUNT(u.id) as "linksCount", SUM(u."visitCount") as "visitCount"
       FROM urls u
@@ -42,7 +42,7 @@ const signUpRepository={
     getUserByEmail,
     getUserById,
     getUserAndLinksById,
-    getUserUrlsRankingBy
+    getUrlsRankingByUser
 }
 
 export default signUpRepository;

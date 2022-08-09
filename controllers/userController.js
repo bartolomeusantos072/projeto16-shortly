@@ -1,49 +1,36 @@
-import signUpRepository from "../repositories/signUpRepository.js";
-import urlsRepository from '../repositories/urlsRepository.js';
+import { usersRepository } from "../repositories/usersRepository.js";
 
-async function getUserById(req, res) {
-    
-        const {id} = req.params;
-        const {user} = res.locals;
+export async function getUser(req, res) {
+  const { tokensResult: { userId } } = res.locals;
+  const { id } = req.params;
 
-        if (id != user.id) {
-            return res.sendStatus(401);
-        }
+  try {
+    const usersResult = await usersRepository.getUser(id);
 
-        try {
-            const resultVisit = await urlsRepository.getVisitCountByUser(id);
-            const [countVisit] = resultVisit.rows;
+    if (usersResult.rowCount === 0) return res.sendStatus(404);
+    if (userId !== parseInt(id)) return res.sendStatus(401);
 
-            const resultUrls = await urlsRepository.getURLSbyUser(id);
-            const userUrls = resultUrls.rows;
+    const shortenUrlResult = await usersRepository.getUserShortenURL(id);
 
-            res.send({
-                id: user.id,
-                name: user.name,
-                countVisit: countVisit.sum || 0,
-                shortenedUrls: userUrls
-            });
-
-        } catch (error) {
-            console.log(error);
-            res.sendStatus(500);
-        }
+    res.status(200).send(_createJSONUrl(usersResult, shortenUrlResult));
+  } catch (erro) {
+    console.log(erro);
+    res.sendStatus(500);
+  }
 }
 
-async function getRanking(req, res) {
-        try { 
-            const resultRank = await signUpRepository.getUrlsRankingByUser();
-            res.send(resultRank.rows);
-        } catch (error) {
-            console.log(error);
-            return res.sendStatus(500); // server error
-        }
+function _createJSONUrl(user, urls) {
+  const { id, name, visitCount } = user.rows[0];
+  const shortenedUrls = [];
+
+  urls.rows.map(obj => {
+    const { id, shortUrl, url, visitCount } = obj
+    shortenedUrls.push({ id, shortUrl, url, visitCount });
+  });
+
+  const userReturn = {
+    id, name, visitCount, shortenedUrls
+  }
+
+  return (userReturn);
 }
-
-
-    const userController = {
-        getUserById,
-        getRanking
-    }
-
-    export default userController;
