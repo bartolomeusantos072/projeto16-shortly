@@ -1,7 +1,4 @@
-import chalk from "chalk";
 import { nanoid } from 'nanoid'
-
-import db from "../db.js";
 import { urlsRepository } from "../repositories/urlsRepository.js";
 
 export async function postURL(req, res) {
